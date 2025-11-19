@@ -81,53 +81,47 @@ const currentYear = new Date().getFullYear();
   setTimeout(updateHeight, 100);
 
   // Animations
-  // We want the footer to be revealed (it is fixed), so we animate elements INSIDE it
-  // as the spacer comes into view.
-
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: spacer,
-      start: "top bottom", // When top of spacer hits bottom of viewport
-      end: "bottom bottom", // When bottom of spacer hits bottom of viewport
+      start: "top bottom",
+      end: "bottom bottom",
       scrub: 1,
     },
   });
 
   // Parallax/Reveal effect on the text
-  // We move the text from down to up, or scale it, or opacity.
-  // Since the footer is fixed, it's already "there" visually behind the content.
-  // As we scroll away the content, the footer is revealed.
-  // We can add a slight movement to the text to make it feel like it's moving at a different speed.
-
+  // Ghostly, subtle entrance fitting for a tattoo studio
   tl.from(chars, {
-    y: 150,
+    y: 30, // Subtle movement
     opacity: 0,
-    stagger: 0.1,
-    ease: "power4.out",
+    filter: "blur(10px)", // Ethereal blur effect
+    stagger: 0.05,
+    duration: 1,
+    ease: "power2.out",
   });
 
   // Hover effect on letters
   chars.forEach((char) => {
     char.addEventListener("mouseenter", () => {
       gsap.to(char, {
-        y: -20,
         color: "#fff",
-        duration: 0.3,
+        textShadow: "0 0 20px rgba(255,255,255,0.4)", // Subtle glow
+        duration: 0.4,
         ease: "power2.out",
       });
     });
 
     char.addEventListener("mouseleave", () => {
       gsap.to(char, {
-        y: 0,
-        color: "var(--color-accent)", // Back to original color
-        duration: 0.3,
+        color: "var(--color-accent)",
+        textShadow: "none",
+        duration: 0.4,
         ease: "power2.out",
       });
     });
   });
 </script>
-
 <style>
   .footer {
     background-color: var(--color-black);
