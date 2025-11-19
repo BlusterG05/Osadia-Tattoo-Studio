@@ -1,0 +1,139 @@
+---
+
+---
+
+<section id="contact" class="contact">
+  <div class="contact-content">
+    <h2 class="cta-text">
+      ¿LISTO PARA <span class="highlight">LA TINTA?</span>
+    </h2>
+    <a href="https://wa.me/593999999999" target="_blank" class="book-btn">
+      <span class="btn-text">COTIZA TU TATUAJE</span>
+      <span class="btn-bg"></span>
+    </a>
+    <div class="info">
+      <p>AV. QUITO & RIO TOACHI</p>
+      <p>SANTO DOMINGO, ECUADOR</p>
+      <p>+593 99 999 9999</p>
+    </div>
+  </div>
+
+  <a href="https://wa.me/593999999999" target="_blank" class="whatsapp-float">
+    <span class="wa-text">WA</span>
+  </a>
+</section>
+
+<style>
+  .contact {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-white);
+    color: var(--color-black);
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .cta-text {
+    font-size: 5vw;
+    margin-bottom: 3rem;
+    line-height: 1;
+  }
+
+  .highlight {
+    font-style: italic;
+    position: relative;
+    display: inline-block;
+  }
+
+  .highlight::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: var(--color-black);
+    z-index: -1;
+    opacity: 0.2;
+  }
+
+  .book-btn {
+    display: inline-block;
+    position: relative;
+    padding: 1.5rem 3rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-white);
+    background: var(--color-black);
+    overflow: hidden;
+    border: 2px solid var(--color-black);
+    transition: color 0.3s ease;
+    margin-bottom: 4rem;
+  }
+
+  .btn-text {
+    position: relative;
+    z-index: 2;
+  }
+
+  .btn-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-white);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1;
+  }
+
+  .book-btn:hover {
+    color: var(--color-black);
+  }
+
+  .book-btn:hover .btn-bg {
+    transform: translateX(0);
+  }
+
+  .info p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .whatsapp-float {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background-color: var(--color-black);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: all 0.3s ease;
+    border: 1px solid var(--color-white);
+    mix-blend-mode: difference;
+  }
+
+  .wa-text {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.2rem;
+  }
+
+  .whatsapp-float:hover {
+    transform: scale(1.1) rotate(5deg);
+    background-color: var(--color-white);
+    color: var(--color-black);
+    border-color: var(--color-black);
+  }
+</style>

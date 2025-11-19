@@ -1,0 +1,285 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<!-- Spacer to push content up and allow the reveal effect -->
+<div class="footer-spacer"></div>
+
+<footer class="footer" id="footer">
+  <div class="footer-content">
+    <div class="top-section">
+      <div class="brand-container">
+        <h2 class="brand-text">OSADIA</h2>
+      </div>
+
+      <div class="social-links">
+        <a href="#" class="social-link">
+          <span class="link-text">INSTAGRAM</span>
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="#" class="social-link">
+          <span class="link-text">TIKTOK</span>
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="#" class="social-link">
+          <span class="link-text">FACEBOOK</span>
+          <span class="link-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="bottom-section">
+      <div class="copyright">
+        <p>&copy; {currentYear} OSADIA TATTOO STUDIO</p>
+        <p>SANTO DOMINGO, ECUADOR</p>
+      </div>
+      <div class="developer">
+        <p>
+          DEVELOPED BY <a
+            href="https://zenithcodev.com"
+            target="_blank"
+            class="dev-link">ZENITHCODEV</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const footer = document.querySelector(".footer") as HTMLElement;
+  const spacer = document.querySelector(".footer-spacer") as HTMLElement;
+  const brandText = document.querySelector(".brand-text") as HTMLElement;
+
+  // Split text for animation
+  if (brandText) {
+    const text = brandText.textContent || "";
+    brandText.innerHTML = text
+      .split("")
+      .map((char) => `<span class="char">${char}</span>`)
+      .join("");
+  }
+
+  const chars = document.querySelectorAll(".brand-text .char");
+
+  // Resize handler for spacer
+  function updateHeight() {
+    if (footer && spacer) {
+      spacer.style.height = `${footer.offsetHeight}px`;
+    }
+  }
+
+  window.addEventListener("resize", updateHeight);
+  // Initial update
+  updateHeight();
+  // Update again after a slight delay to ensure fonts loaded
+  setTimeout(updateHeight, 100);
+
+  // Animations
+  // We want the footer to be revealed (it is fixed), so we animate elements INSIDE it
+  // as the spacer comes into view.
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: spacer,
+      start: "top bottom", // When top of spacer hits bottom of viewport
+      end: "bottom bottom", // When bottom of spacer hits bottom of viewport
+      scrub: 1,
+    },
+  });
+
+  // Parallax/Reveal effect on the text
+  // We move the text from down to up, or scale it, or opacity.
+  // Since the footer is fixed, it's already "there" visually behind the content.
+  // As we scroll away the content, the footer is revealed.
+  // We can add a slight movement to the text to make it feel like it's moving at a different speed.
+
+  tl.from(chars, {
+    y: 150,
+    opacity: 0,
+    stagger: 0.1,
+    ease: "power4.out",
+  });
+
+  // Hover effect on letters
+  chars.forEach((char) => {
+    char.addEventListener("mouseenter", () => {
+      gsap.to(char, {
+        y: -20,
+        color: "#fff",
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    });
+
+    char.addEventListener("mouseleave", () => {
+      gsap.to(char, {
+        y: 0,
+        color: "var(--color-accent)", // Back to original color
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    });
+  });
+</script>
+
+<style>
+  .footer {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    padding: 6rem 2rem 2rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* Ensure it doesn't block clicks when hidden? 
+       Actually, if z-index is 0 and main is 1, main blocks clicks.
+       When main is scrolled away, footer is exposed. */
+  }
+
+  /* Ensure main content covers the footer */
+  :global(main) {
+    position: relative;
+    z-index: 1;
+    background-color: var(--color-black);
+    margin-bottom: 0 !important; /* Spacer handles the space */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    min-height: 100vh; /* Ensure main has content */
+  }
+
+  /* If main is not the direct sibling, we might need to target body or #app */
+  :global(body) {
+    background-color: var(--color-black);
+  }
+
+  .footer-content {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 4rem;
+  }
+
+  .brand-container {
+    overflow: hidden;
+  }
+
+  .brand-text {
+    font-family: var(--font-display);
+    font-size: 15vw;
+    line-height: 0.8;
+    margin: 0;
+    letter-spacing: -0.05em;
+    color: var(--color-accent); /* Darker initially */
+    text-transform: uppercase;
+    display: flex;
+    cursor: default;
+    transition: color 0.5s ease;
+  }
+
+  .brand-text:hover {
+    color: var(--color-white);
+  }
+
+  .brand-text :global(.char) {
+    display: inline-block;
+    transition: color 0.3s ease;
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .social-link {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    color: #666;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid transparent;
+  }
+
+  .social-link:hover {
+    color: var(--color-white);
+    border-bottom-color: var(--color-white);
+    padding-left: 1rem;
+  }
+
+  .link-arrow {
+    font-size: 1rem;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .social-link:hover .link-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .bottom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid #222;
+    padding-top: 2rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: #444;
+    letter-spacing: 0.05em;
+  }
+
+  .dev-link {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .dev-link:hover {
+    color: var(--color-white);
+  }
+
+  @media (max-width: 768px) {
+    .top-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+
+    .brand-text {
+      font-size: 20vw;
+    }
+
+    .bottom-section {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+  }
+</style>

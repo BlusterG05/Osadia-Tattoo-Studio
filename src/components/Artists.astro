@@ -1,0 +1,131 @@
+---
+
+---
+
+<section id="artists" class="artists">
+  <h2 class="section-title">LOS ARTISTAS</h2>
+  <div class="artists-grid">
+    <div class="artist-card">
+      <div class="artist-image">
+        <div class="placeholder-img"></div>
+        <div class="overlay"></div>
+      </div>
+      <div class="artist-info">
+        <h3>ALEX</h3>
+        <p class="role">RESIDENTE</p>
+        <p class="specialty">BLACKWORK &bull; GEOMETRICO</p>
+      </div>
+    </div>
+    <div class="artist-card">
+      <div class="artist-image">
+        <div class="placeholder-img"></div>
+        <div class="overlay"></div>
+      </div>
+      <div class="artist-info">
+        <h3>ANAHI</h3>
+        <p class="role">RESIDENTE</p>
+        <p class="specialty">FINE LINE &bull; MINIMALISMO</p>
+      </div>
+    </div>
+    <div class="artist-card">
+      <div class="artist-image">
+        <div class="placeholder-img"></div>
+        <div class="overlay"></div>
+      </div>
+      <div class="artist-info">
+        <h3>DAVID</h3>
+        <p class="role">GUEST SPOT</p>
+        <p class="specialty">TRADICIONAL &bull; OLD SCHOOL</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .artists {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    padding: 8rem 2rem;
+    border-top: 1px solid #222;
+  }
+
+  .section-title {
+    font-size: 4rem;
+    margin-bottom: 6rem;
+    text-align: center;
+    letter-spacing: -0.02em;
+  }
+
+  .artists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .artist-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    cursor: pointer;
+  }
+
+  .artist-image {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background-color: #111;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .placeholder-img {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #111, #222);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .artist-card:hover .placeholder-img {
+    transform: scale(1.05);
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease;
+  }
+
+  .artist-card:hover .overlay {
+    background: rgba(0, 0, 0, 0);
+  }
+
+  .artist-info {
+    text-align: left;
+  }
+
+  h3 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  .role {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  .specialty {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-white);
+    opacity: 0.7;
+  }
+</style>

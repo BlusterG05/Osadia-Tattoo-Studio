@@ -1,0 +1,132 @@
+---
+
+---
+
+<section id="styles" class="styles">
+  <h2 class="section-title">NUESTROS ESTILOS</h2>
+  <div class="styles-container">
+    <div class="style-item">
+      <h3 class="style-name">BLACKWORK</h3>
+      <div class="style-desc">
+        <p>
+          Contraste puro. Tinta negra saturada. Sin grises. Impacto visual
+          máximo.
+        </p>
+      </div>
+    </div>
+    <div class="style-item">
+      <h3 class="style-name">FINE LINE</h3>
+      <div class="style-desc">
+        <p>
+          Delicadeza y precisión. Líneas finas como agujas. Detalles
+          microscópicos.
+        </p>
+      </div>
+    </div>
+    <div class="style-item">
+      <h3 class="style-name">REALISMO</h3>
+      <div class="style-desc">
+        <p>Fotografía en la piel. Sombras suaves. Profundidad y vida.</p>
+      </div>
+    </div>
+    <div class="style-item">
+      <h3 class="style-name">LETTERING</h3>
+      <div class="style-desc">
+        <p>
+          Caligrafía urbana. Gótico, Chicano, Minimalista. Tu mensaje, nuestro
+          estilo.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+
+  const items = document.querySelectorAll(".style-item");
+
+  items.forEach((item) => {
+    item.addEventListener("mouseenter", () => {
+      gsap.to(item.querySelector(".style-desc"), {
+        height: "auto",
+        opacity: 1,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+      gsap.to(item.querySelector(".style-name"), {
+        x: 20,
+        duration: 0.3,
+      });
+    });
+
+    item.addEventListener("mouseleave", () => {
+      gsap.to(item.querySelector(".style-desc"), {
+        height: 0,
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in",
+      });
+      gsap.to(item.querySelector(".style-name"), {
+        x: 0,
+        duration: 0.3,
+      });
+    });
+  });
+</script>
+
+<style>
+  .styles {
+    background-color: var(--color-white);
+    color: var(--color-black);
+    padding: 6rem 2rem;
+  }
+
+  .section-title {
+    font-size: 4rem;
+    margin-bottom: 4rem;
+    text-align: center;
+    letter-spacing: -0.02em;
+  }
+
+  .styles-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .style-item {
+    border-bottom: 1px solid var(--color-black);
+    padding: 2rem 0;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .style-name {
+    font-size: 3rem;
+    margin: 0;
+    transition: color 0.3s ease;
+  }
+
+  .style-item:hover .style-name {
+    color: #333;
+  }
+
+  .style-desc {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  .style-desc p {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    padding-top: 1rem;
+    max-width: 600px;
+  }
+
+  @media (max-width: 768px) {
+    .style-name {
+      font-size: 2rem;
+    }
+  }
+</style>

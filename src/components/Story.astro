@@ -1,0 +1,112 @@
+---
+
+---
+
+<section id="story" class="story">
+  <div class="container">
+    <div class="text-reveal">
+      <p class="line">NO SOLO TATUAMOS PIEL.</p>
+      <p class="line">MARCAMOS ALMAS.</p>
+      <p class="line">OSADIA ES EL ARTE</p>
+      <p class="line">DE SER AUDAZ.</p>
+    </div>
+    <div class="description">
+      <p>
+        Ubicados en el corazón de Santo Domingo, Osadia Tattoo Studio es un
+        santuario para quienes buscan expresar su caos interior y belleza a
+        través de la tinta. Nos especializamos en minimalismo, blackwork y
+        líneas finas, pero nuestros artistas son maestros en adaptar tu visión.
+        Sin emojis, sin rodeos. Solo arte puro.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const lines = document.querySelectorAll(".line");
+
+  lines.forEach((line) => {
+    gsap.fromTo(
+      line,
+      { y: 100, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: line,
+          start: "top 80%",
+          end: "bottom 20%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+  });
+
+  gsap.from(".description", {
+    y: 50,
+    opacity: 0,
+    duration: 1,
+    scrollTrigger: {
+      trigger: ".description",
+      start: "top 85%",
+    },
+  });
+</script>
+
+<style>
+  .story {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-white);
+    color: var(--color-black);
+    padding: 4rem 2rem;
+  }
+
+  .container {
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  .text-reveal {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.1;
+    overflow: hidden;
+  }
+
+  .line {
+    display: block;
+    transform-origin: top left;
+  }
+
+  .description {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    line-height: 1.6;
+    align-self: end;
+    max-width: 500px;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .text-reveal {
+      font-size: 2rem;
+    }
+  }
+</style>
