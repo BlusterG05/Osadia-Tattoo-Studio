@@ -2,18 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
-
-const works = [
-  { id: 1, style: "span-2" },
-  { id: 2, style: "" },
-  { id: 3, style: "" },
-  { id: 4, style: "span-2" },
-  { id: 5, style: "" },
-  { id: 6, style: "" },
-  { id: 7, style: "" },
-  { id: 8, style: "span-2" },
-  { id: 9, style: "" },
-];
+import InteractiveGallery from "../components/InteractiveGallery.astro";
 ---
 
 <Layout
@@ -28,14 +17,9 @@ const works = [
       <p>EXPLORA NUESTRO ARTE</p>
     </header>
 
-    <div class="gallery-grid">
-      {
-        works.map((work) => (
-          <div class={`gallery-item ${work.style}`}>
-            <div class="placeholder-img" />
-          </div>
-        ))
-      }
+    <div class="portfolio-container">
+      <!-- Galería interactiva completa sin límites -->
+      <InteractiveGallery />
     </div>
 
     <div class="back-home">
@@ -48,7 +32,7 @@ const works = [
 
 <style>
   .portfolio-page {
-    padding-top: 100px;
+    padding-top: 120px;
     background-color: var(--color-black);
     min-height: 100vh;
     color: var(--color-white);
@@ -70,43 +54,18 @@ const works = [
     font-family: var(--font-body);
     letter-spacing: 0.2em;
     color: #888;
+    font-size: 0.9rem;
   }
 
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
-    padding: 2rem;
+  .portfolio-container {
     max-width: 1400px;
     margin: 0 auto;
-  }
-
-  .gallery-item {
-    aspect-ratio: 1;
-    background-color: #111;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .gallery-item.span-2 {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .placeholder-img {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
-    transition: transform 0.5s ease;
-  }
-
-  .gallery-item:hover .placeholder-img {
-    transform: scale(1.05);
+    padding: 0 2rem;
   }
 
   .back-home {
     text-align: center;
-    padding: 4rem 0;
+    padding: 6rem 0;
   }
 
   .back-btn {
@@ -117,6 +76,8 @@ const works = [
     text-decoration: none;
     font-family: var(--font-display);
     transition: all 0.3s ease;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
   }
 
   .back-btn:hover {
@@ -125,13 +86,11 @@ const works = [
   }
 
   @media (max-width: 768px) {
-    .gallery-item.span-2 {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
     h1 {
       font-size: 3rem;
+    }
+    .portfolio-container {
+        padding: 0 1rem;
     }
   }
 </style>

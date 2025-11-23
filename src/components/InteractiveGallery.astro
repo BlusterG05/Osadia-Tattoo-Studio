@@ -1,0 +1,664 @@
+---
+import { portfolioData } from "../data/portfolioData";
+
+interface Props {
+  limit?: number;
+  featured?: boolean;
+}
+
+const { limit, featured = false } = Astro.props;
+
+// Si hay límite, cortamos, si no, todo.
+const displayItems = limit ? portfolioData.slice(0, limit) : portfolioData;
+// Para el strip de miniaturas siempre necesitamos todos los datos (o una cantidad razonable)
+const allItems = portfolioData;
+---
+
+<div class="gallery-wrapper">
+  <!-- Grid de Imágenes (Masonry / Grid Moderno) -->
+  <div class={`gallery-grid ${featured ? 'featured-layout' : ''}`} id="gallery-grid">
+    {
+      displayItems.map((item, index) => (
+        <div
+          class={`gallery-item ${item.span || ""}`}
+          data-id={item.id}
+          data-index={index}
+        >
+          <div class="img-container">
+            <img src={item.src} alt={item.title} loading="lazy" />
+            
+            <!-- NUEVO HOVER -->
+            <div class="overlay">
+              <div class="overlay-content">
+                <span class="overlay-category">{item.category}</span>
+                <div class="view-label">
+                  <span class="label-text">VER DETALLES</span>
+                  <span class="label-line"></span>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <!-- Modal / Lightbox "Cinema Mode" -->
+  <div id="gallery-modal" class="modal">
+    <div class="modal-backdrop"></div>
+    
+    <!-- Botón Cerrar -->
+    <button class="close-btn" aria-label="Cerrar">
+      <span class="close-txt">CERRAR</span> ✕
+    </button>
+    
+    <div class="modal-layout">
+      
+      <!-- Área Principal (Imagen + Info) -->
+      <div class="main-stage">
+        
+        <!-- Botón Anterior -->
+        <button class="nav-btn prev" aria-label="Anterior">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+
+        <!-- Contenedor Imagen -->
+        <div class="image-wrapper">
+            <img id="modal-img" src="" alt="" />
+        </div>
+
+        <!-- Botón Siguiente -->
+        <button class="nav-btn next" aria-label="Siguiente">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+
+        <!-- Panel de Información Flotante -->
+        <div class="info-panel">
+            <div class="info-content">
+                <span id="modal-category" class="category-tag">CATEGORIA</span>
+                <h3 id="modal-title">TITULO</h3>
+                <p id="modal-desc">Descripción...</p>
+                <a href="https://wa.me/593999999999" target="_blank" class="action-btn">COTIZAR PIEZA</a>
+            </div>
+        </div>
+      </div>
+
+      <!-- Footer: Strip de Miniaturas -->
+      <div class="thumbs-strip">
+        <div class="thumbs-track">
+            {allItems.map((item, idx) => (
+                <button 
+                    class="thumb-btn" 
+                    data-index={idx}
+                    aria-label={`Ver ${item.title}`}
+                >
+                    <img src={item.src} alt={item.title} loading="lazy" />
+                </button>
+            ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Datos para JS -->
+<script define:vars={{ galleryItems: displayItems, allItems: allItems }}>
+  window.galleryData = galleryItems; // Los que se ven en el grid
+  window.allGalleryData = allItems;  // Todos para el modal
+</script>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // --- 1. Animación de Entrada del Grid (ScrollTrigger) ---
+  const gridItems = document.querySelectorAll(".gallery-item");
+  
+  gsap.fromTo(gridItems, 
+    { y: 50, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      stagger: 0.1,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#gallery-grid",
+        start: "top 80%",
+      }
+    }
+  );
+
+  // --- 2. Lógica del Modal ---
+  const modal = document.getElementById("gallery-modal");
+  
+  // Mover al body para evitar conflictos de z-index
+  if (modal && document.body) {
+    document.body.appendChild(modal);
+  }
+
+  const backdrop = modal?.querySelector(".modal-backdrop");
+  const closeBtn = modal?.querySelector(".close-btn");
+  const prevBtn = modal?.querySelector(".prev");
+  const nextBtn = modal?.querySelector(".next");
+  const thumbBtns = modal?.querySelectorAll(".thumb-btn");
+  
+  // Elementos dinámicos
+  const mImg = document.getElementById("modal-img") as HTMLImageElement;
+  const mTitle = document.getElementById("modal-title");
+  const mCategory = document.getElementById("modal-category");
+  const mDesc = document.getElementById("modal-desc");
+  const infoPanel = modal?.querySelector(".info-panel");
+
+  // Usamos 'allGalleryData' para navegar por todo el portafolio dentro del modal
+  // incluso si en el home solo mostramos 6.
+  const data = window.allGalleryData || [];
+  let currentIndex = 0;
+
+  // Abrir Modal
+  const openModal = (indexInDisplayList) => {
+    if (!modal) return;
+    
+    // Encontrar el índice real en la lista completa (data) basado en el ID si es necesario,
+    // o asumir mapeo directo si displayItems es un slice de allItems.
+    // Para simplificar, si venimos del grid, usamos el ID para buscar en 'data'.
+    const clickedItem = window.galleryData[indexInDisplayList];
+    const realIndex = data.findIndex(d => d.id === clickedItem.id);
+    
+    currentIndex = realIndex !== -1 ? realIndex : 0;
+    
+    updateModalContent(false); // false = sin animación de transición, es la inicial
+    
+    document.body.style.overflow = "hidden";
+    modal.style.display = "flex";
+    
+    // Animación de entrada del Modal
+    const tl = gsap.timeline();
+    tl.to(modal, { opacity: 1, duration: 0.4 })
+      .fromTo(".image-wrapper", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: "power3.out" }, "-=0.2")
+      .fromTo(".info-panel", { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 }, "-=0.4")
+      .fromTo(".thumbs-strip", { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, "-=0.4");
+  };
+
+  const closeModal = () => {
+    if (!modal) return;
+    gsap.to(modal, { 
+        opacity: 0, 
+        duration: 0.3, 
+        onComplete: () => {
+            modal.style.display = "none";
+            document.body.style.overflow = "";
+        }
+    });
+  };
+
+  const updateModalContent = (animate = true) => {
+    const item = data[currentIndex];
+    if (!item) return;
+
+    // Actualizar Textos e Imagen
+    if (animate) {
+        gsap.fromTo(mImg, { opacity: 0.5, scale: 0.98 }, { opacity: 1, scale: 1, duration: 0.4 });
+        gsap.fromTo([mTitle, mDesc, mCategory], { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.05 });
+    }
+
+    if(mImg) mImg.src = item.src;
+    if(mTitle) mTitle.textContent = item.title;
+    if(mCategory) mCategory.textContent = item.category;
+    if(mDesc) mDesc.textContent = item.description;
+
+    // Actualizar estado de miniaturas
+    thumbBtns?.forEach((btn, idx) => {
+        if (idx === currentIndex) {
+            btn.classList.add("active");
+            btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        } else {
+            btn.classList.remove("active");
+        }
+    });
+  };
+
+  const nextImage = () => {
+    currentIndex = (currentIndex + 1) % data.length;
+    updateModalContent(true);
+  };
+
+  const prevImage = () => {
+    currentIndex = (currentIndex - 1 + data.length) % data.length;
+    updateModalContent(true);
+  };
+
+  // Listeners Grid
+  gridItems.forEach((item, idx) => {
+    item.addEventListener("click", () => openModal(idx));
+  });
+
+  // Listeners Modal
+  closeBtn?.addEventListener("click", closeModal);
+  backdrop?.addEventListener("click", closeModal);
+  nextBtn?.addEventListener("click", nextImage);
+  prevBtn?.addEventListener("click", prevImage);
+
+  // Listeners Miniaturas
+  thumbBtns?.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+        const idx = parseInt((e.currentTarget as HTMLElement).dataset.index || "0");
+        currentIndex = idx;
+        updateModalContent(true);
+    });
+  });
+
+  // Teclado
+  document.addEventListener("keydown", (e) => {
+    if (modal && modal.style.display === "flex") {
+        if (e.key === "Escape") closeModal();
+        if (e.key === "ArrowRight") nextImage();
+        if (e.key === "ArrowLeft") prevImage();
+    }
+  });
+</script>
+
+<style>
+  /* --- Grid Layout Moderno --- */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2px; /* Gap mínimo para estilo "mosaico" */
+    width: 100%;
+  }
+
+  .featured-layout {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .featured-layout .row-span-2 {
+    grid-row: span 2;
+  }
+
+  .gallery-item {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    aspect-ratio: 1;
+  }
+  
+  .featured-layout .row-span-2 {
+    aspect-ratio: 1 / 2;
+  }
+
+  .img-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), filter 0.5s ease;
+    filter: grayscale(100%) brightness(0.9);
+  }
+
+  .gallery-item:hover img {
+    transform: scale(1.1);
+    filter: grayscale(0%) brightness(1);
+  }
+
+  /* --- ACTUALIZACIÓN DEL HOVER --- */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6); /* Fondo más oscuro para legibilidad */
+    backdrop-filter: blur(2px); /* Desenfoque sutil elegante */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .gallery-item:hover .overlay {
+    opacity: 1;
+  }
+
+  .overlay-content {
+    text-align: center;
+    color: var(--color-white);
+    transform: translateY(20px);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .gallery-item:hover .overlay-content {
+    transform: translateY(0);
+  }
+
+  .overlay-category {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s ease 0.1s; /* Delay ligero */
+  }
+
+  .gallery-item:hover .overlay-category {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .view-label {
+    position: relative;
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+  }
+
+  .label-text {
+    position: relative;
+    z-index: 2;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: var(--color-white);
+  }
+
+  /* Efecto de llenado al hacer hover sobre el texto (opcional, sutil) */
+  .view-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-white);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+  }
+
+  .gallery-item:hover .view-label::before {
+    /* Solo se llena si el mouse está encima del item, 
+       pero podemos dejarlo outline para mantenerlo minimalista.
+       Si quieres que se llene de blanco al pasar el mouse:
+       transform: scaleX(1);
+       transform-origin: left;
+    */
+  }
+  
+  /* --- Modal / Lightbox "Cinema" --- */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    opacity: 0; /* Controlado por GSAP */
+    flex-direction: column;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: #050505; /* Fondo sólido oscuro */
+  }
+
+  .modal-layout {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* --- Main Stage (Top Section) --- */
+  .main-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 4rem; /* Espacio para flechas */
+  }
+
+  .image-wrapper {
+    height: 80%;
+    width: auto;
+    max-width: 60%;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+  }
+
+  #modal-img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* --- Navigation Buttons --- */
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--color-white);
+    color: var(--color-white);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .prev { left: 2rem; }
+  .next { right: 2rem; }
+
+  /* --- Info Panel (Floating Right/Bottom) --- */
+  .info-panel {
+    position: absolute;
+    bottom: 2rem;
+    right: 4rem; /* Alineado a la derecha */
+    width: 350px;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2rem;
+    color: var(--color-white);
+    pointer-events: auto;
+  }
+
+  .category-tag {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: #888;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  #modal-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  #modal-desc {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: #aaa;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .action-btn {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--color-black);
+    background: var(--color-white);
+    padding: 0.8rem 1.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background 0.3s;
+  }
+  
+  .action-btn:hover {
+    background: #ccc;
+  }
+
+  /* --- Thumbs Strip (Bottom) --- */
+  .thumbs-strip {
+    height: 100px;
+    background: #0a0a0a;
+    border-top: 1px solid #222;
+    display: flex;
+    align-items: center;
+    z-index: 20;
+  }
+
+  .thumbs-track {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0 2rem;
+    overflow-x: auto;
+    height: 100%;
+    align-items: center;
+    width: 100%;
+    /* Hide scrollbar */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+  }
+  
+  .thumbs-track::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  .thumb-btn {
+    flex: 0 0 80px;
+    height: 80px;
+    border: none;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .thumb-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumb-btn:hover {
+    opacity: 0.8;
+  }
+
+  .thumb-btn.active {
+    opacity: 1;
+    border: 1px solid var(--color-white);
+    transform: scale(1.05);
+  }
+
+  /* --- Close Button --- */
+  .close-btn {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+
+  .close-txt {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  .close-btn:hover { opacity: 1; }
+
+  /* --- Responsive --- */
+  @media (max-width: 1024px) {
+    .featured-layout {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .main-stage {
+        flex-direction: column;
+        padding: 4rem 1rem 1rem;
+    }
+    .image-wrapper {
+        max-width: 100%;
+        height: 50%;
+        margin-bottom: 1rem;
+    }
+    .info-panel {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        max-width: 500px;
+        background: transparent;
+        border: none;
+        padding: 1rem 0;
+    }
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+    .prev { left: 1rem; }
+    .next { right: 1rem; }
+  }
+
+  @media (max-width: 768px) {
+    .featured-layout {
+      grid-template-columns: 1fr;
+    }
+    .thumbs-strip {
+        height: 80px;
+    }
+    .thumb-btn {
+        flex: 0 0 60px;
+        height: 60px;
+    }
+    #modal-title {
+        font-size: 1.5rem;
+    }
+  }
+</style>
