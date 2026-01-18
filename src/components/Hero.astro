@@ -1,15 +1,20 @@
 ---
-
+import { siteConfig } from "../data/siteConfig";
 ---
 
-<section class="hero">
+<header
+  class="hero"
+  role="banner"
+  aria-label="Bienvenidos a Osadía Tattoo Studio"
+>
   <div class="noise"></div>
   <div class="hero-content">
     <h1 class="glitch-wrapper">
       <span class="glitch" data-text="OSADIA">OSADIA</span>
+      <span class="visually-hidden"> - {siteConfig.name}</span>
     </h1>
     <p class="subtitle">TATTOO STUDIO</p>
-    <p class="location">SANTO DOMINGO, ECUADOR</p>
+    <p class="location">{siteConfig.location.city.toUpperCase()}, ECUADOR</p>
   </div>
 
   <div class="marquee-container" aria-hidden="true">
@@ -28,7 +33,7 @@
   <div class="scroll-indicator">
     <span>EXPLORA</span>
   </div>
-</section>
+</header>
 
 <script>
   import { gsap } from "gsap";

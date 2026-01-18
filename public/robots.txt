@@ -1,4 +1,28 @@
+# Osadia Tattoo Studio - Ecuador
+# https://osadia-studio.com
+
 User-agent: *
 Allow: /
 
+# Sitemap
 Sitemap: https://osadia-studio.com/sitemap-index.xml
+
+# AI/LLM Crawler Information
+# For AI assistants and LLMs, see: https://osadia-studio.com/llms.txt
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /portfolio/
+
+# Social Media Crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# Cache settings
+Crawl-delay: 1
