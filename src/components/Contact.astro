@@ -1,5 +1,7 @@
 ---
+import { siteConfig } from "../data/siteConfig";
 
+const whatsappUrl = `https://wa.me/${siteConfig.contact.whatsapp.replace(/\+/g, "")}`;
 ---
 
 <section id="contact" class="contact" aria-label="Contacto">
@@ -8,8 +10,9 @@
       ¿LISTO PARA <span class="highlight">LA TINTA?</span>
     </h2>
     <a
-      href="https://wa.me/593999999999"
+      href={whatsappUrl}
       target="_blank"
+      rel="noopener noreferrer"
       class="book-btn"
       aria-label="Cotiza tu tatuaje por WhatsApp"
     >
@@ -17,19 +20,27 @@
       <span class="btn-bg"></span>
     </a>
     <address class="info">
-      <p>AV. QUITO & RIO TOACHI</p>
-      <p>SANTO DOMINGO, ECUADOR</p>
+      <p>{siteConfig.location.street.toUpperCase()}</p>
       <p>
-        <a href="tel:+593992351451" aria-label="Llamar al estudio"
-          >+593 99 999 9999</a
+        {siteConfig.location.city.toUpperCase()}, {
+          siteConfig.location.country.toUpperCase()
+        }
+      </p>
+      <p>
+        <a
+          href={`tel:${siteConfig.contact.phone}`}
+          aria-label="Llamar al estudio"
         >
+          {siteConfig.contact.phoneDisplay}
+        </a>
       </p>
     </address>
   </div>
 
   <a
-    href="https://wa.me/593999999999"
+    href={whatsappUrl}
     target="_blank"
+    rel="noopener noreferrer"
     class="whatsapp-float"
     aria-label="Chat de WhatsApp"
   >

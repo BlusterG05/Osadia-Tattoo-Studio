@@ -3,11 +3,24 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import InteractiveGallery from "../components/InteractiveGallery.astro";
+import { seoMeta, generateImageGallerySchema } from "../data/seoConfig";
+import { portfolioData } from "../data/portfolioData";
+
+// Preparar datos para el schema de galería
+const galleryImages = portfolioData.map((item) => ({
+  src: item.src,
+  title: item.title,
+  description: item.description,
+}));
+
+const gallerySchema = generateImageGallerySchema(galleryImages);
 ---
 
 <Layout
-  title="Galería de Tatuajes | Osadia Tattoo Studio"
-  description="Explora nuestra galería de tatuajes. Realismo, Blackwork, Tradicional y más. Inspírate con el arte de nuestros tatuadores en Ecuador."
+  title={seoMeta.portfolio.title}
+  description={seoMeta.portfolio.description}
+  keywords={seoMeta.portfolio.keywords}
+  page="portfolio"
 >
   <Navigation />
 
@@ -28,6 +41,9 @@ import InteractiveGallery from "../components/InteractiveGallery.astro";
   </main>
 
   <Footer />
+
+  <!-- Schema adicional para galería de imágenes -->
+  <script type="application/ld+json" set:html={JSON.stringify(gallerySchema)} />
 </Layout>
 
 <style>
@@ -90,7 +106,7 @@ import InteractiveGallery from "../components/InteractiveGallery.astro";
       font-size: 3rem;
     }
     .portfolio-container {
-        padding: 0 1rem;
+      padding: 0 1rem;
     }
   }
 </style>

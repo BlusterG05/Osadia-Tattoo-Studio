@@ -1,43 +1,68 @@
 ---
+import { siteConfig } from "../data/siteConfig";
+
 const currentYear = new Date().getFullYear();
 ---
 
 <!-- Spacer to push content up and allow the reveal effect -->
 <div class="footer-spacer"></div>
 
-<footer class="footer" id="footer">
+<footer class="footer" id="footer" role="contentinfo">
   <div class="footer-content">
     <div class="top-section">
       <div class="brand-container">
         <h2 class="brand-text">OSADIA</h2>
       </div>
 
-      <div class="social-links">
-        <a href="https://www.instagram.com/osadia_tattoo/" class="social-link">
+      <nav class="social-links" aria-label="Redes Sociales">
+        <a
+          href={siteConfig.social.instagram.url}
+          class="social-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Síguenos en Instagram"
+        >
           <span class="link-text">INSTAGRAM</span>
           <span class="link-arrow">↗</span>
         </a>
-        <a href="https://www.tiktok.com/@osadia_tattoo" class="social-link">
+        <a
+          href={siteConfig.social.tiktok.url}
+          class="social-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Síguenos en TikTok"
+        >
           <span class="link-text">TIKTOK</span>
           <span class="link-arrow">↗</span>
         </a>
-        <a href="https://www.facebook.com/osadia_tattoo" class="social-link">
+        <a
+          href={siteConfig.social.facebook.url}
+          class="social-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Síguenos en Facebook"
+        >
           <span class="link-text">FACEBOOK</span>
           <span class="link-arrow">↗</span>
         </a>
-      </div>
+      </nav>
     </div>
 
     <div class="bottom-section">
       <div class="copyright">
-        <p>&copy; {currentYear} OSADIA TATTOO STUDIO</p>
-        <p>SANTO DOMINGO, ECUADOR</p>
+        <p>&copy; {currentYear} {siteConfig.name.toUpperCase()}</p>
+        <p>
+          {siteConfig.location.city.toUpperCase()}, {
+            siteConfig.location.country.toUpperCase()
+          }
+        </p>
       </div>
       <div class="developer">
         <p>
           DEVELOPED BY <a
             href="https://zenithcodev.com"
             target="_blank"
+            rel="noopener noreferrer"
             class="dev-link">ZENITHCODEV</a
           >
         </p>
