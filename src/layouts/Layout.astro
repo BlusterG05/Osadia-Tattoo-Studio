@@ -15,7 +15,7 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const siteUrl = "https://osadia.studio";
+const siteUrl = "https://osadia-studio.com";
 
 const jsonLD = {
   "@context": "https://schema.org",
@@ -23,10 +23,10 @@ const jsonLD = {
   name: "Osadia Tattoo Studio",
   image: `${siteUrl}${image}`,
   url: siteUrl,
-  telephone: "+593992351451", // Placeholder
+  telephone: "+593992351451",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Av. Quito y Rio Toachi", // Placeholder
+    streetAddress: "Av. Quito y Rio Toachi",
     addressLocality: "Santo Domingo",
     addressRegion: "Santo Domingo de los Tsáchilas",
     postalCode: "230101",
@@ -34,8 +34,8 @@ const jsonLD = {
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: -0.253, // Placeholder
-    longitude: -79.1754, // Placeholder
+    latitude: -0.253,
+    longitude: -79.1754,
   },
   openingHoursSpecification: {
     "@type": "OpeningHoursSpecification",
@@ -51,8 +51,8 @@ const jsonLD = {
     closes: "20:00",
   },
   sameAs: [
-    "https://www.instagram.com/osadiatattoostudio", // Placeholder
-    "https://www.facebook.com/osadiatattoostudio", // Placeholder
+    "https://www.instagram.com/osadia_tattoo",
+    "https://www.facebook.com/osadia_tattoo",
   ],
 };
 ---
