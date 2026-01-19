@@ -44,8 +44,12 @@
 
     <div class="artist-visual" aria-hidden="true">
       <div class="image-container">
-        <!-- Placeholder for Anahi's photo -->
-        <div class="placeholder-image"></div>
+        <img
+          src="/artist/anahi.jpg"
+          alt="Anahí - Artista de tatuajes especialista en Fine Line y Minimalismo"
+          class="artist-image"
+          loading="lazy"
+        />
         <div class="image-overlay"></div>
       </div>
       <div class="decorative-circle"></div>
@@ -303,12 +307,12 @@
     filter: grayscale(0%) contrast(1);
   }
 
-  .placeholder-image {
+  .artist-image {
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, #222, #111);
-    min-height: 700px; /* Taller aspect ratio */
+    min-height: 700px;
     object-fit: cover;
+    object-position: top center;
   }
 
   .image-overlay {
@@ -349,7 +353,7 @@
       order: -1; /* Image first on mobile? Or keep text first? Let's keep text first for context */
     }
 
-    .placeholder-image {
+    .artist-image {
       min-height: 400px;
     }
   }
