@@ -26,30 +26,28 @@ export const siteConfig = {
   // ─────────────────────────────────────────────────────────────────────────────
   contact: {
     // Teléfono principal (formato internacional con código de país)
-    phone: "+593999999999",
+    phone: "+593992351451",
     // Teléfono formateado para mostrar
-    phoneDisplay: "+593 99 999 9999",
+    phoneDisplay: "+593 99 235 1451",
     // WhatsApp (puede ser diferente al teléfono principal)
-    whatsapp: "+593999999999",
+    whatsapp: "+593992351451",
     // Email
-    email: "contacto@osadia-studio.com",
+    email: "anahimishellv@gmail.com",
   },
 
   // ─────────────────────────────────────────────────────────────────────────────
   // UBICACIÓN
   // ─────────────────────────────────────────────────────────────────────────────
   location: {
-    street: "Av. Quito y Río Toachi",
+    street: "Coop. Las Palmas Calle Bolivia y Guatemala",
     city: "Santo Domingo",
     region: "Santo Domingo de los Tsáchilas",
     country: "Ecuador",
     countryCode: "EC",
-    postalCode: "230101",
-    // Coordenadas GPS (obtener de Google Maps)
-    latitude: -0.253,
-    longitude: -79.1754,
-    // URL de Google Maps (copiar el enlace de compartir)
-    mapsUrl: "https://maps.google.com/?q=-0.253,-79.1754",
+    postalCode: "230201",
+    latitude: -0.251254,
+    longitude: -79.183094,
+    mapsUrl: "https://maps.app.goo.gl/oXfQpjNm1xt9ozVM9",
   },
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -71,7 +69,7 @@ export const siteConfig = {
   social: {
     instagram: {
       url: "https://www.instagram.com/osadia_tattoo/",
-      handle: "@osadia_tattoo",
+      handle: "@osadia_tattoo", 
     },
     tiktok: {
       url: "https://www.tiktok.com/@osadia_tattoo",
@@ -88,9 +86,9 @@ export const siteConfig = {
   // ─────────────────────────────────────────────────────────────────────────────
   artists: [
     {
-      name: "Anahi",
+      name: "Anahi Vera",
       role: "Artista Principal",
-      specialties: ["Realismo", "Blackwork", "Fine Line", "Minimalismo"],
+      specialties: [ "Blackwork", "Fine Line", "Minimalismo"],
     },
     // Agregar más artistas aquí
   ],
@@ -99,14 +97,12 @@ export const siteConfig = {
   // ESTILOS DE TATUAJE OFRECIDOS
   // ─────────────────────────────────────────────────────────────────────────────
   styles: [
-    "Realismo",
     "Blackwork",
     "Fine Line",
     "Minimalismo",
     "Neotradicional",
     "Dotwork",
     "Geométrico",
-    "Cover Up",
     "Black & Grey",
   ],
 
